@@ -7,50 +7,59 @@ const CORS_HEADERS = {
 };
 
 export default async function handler(req, res) {
-  // Handle CORS preflight
-  Object.entries(CORS_HEADERS).forEach(([k, v]) => res.setHeader(k, v));
-  if (req.method === 'OPTIONS') {
-    return res.status(200).end();
-  }
-
-  if (req.method === 'GET') {
-    const { data, error } = await supabase
-      .from('portfolios')
-      .select('*')
-      .order('created_at', { ascending: false });
-
-    if (error) return res.status(500).json({ error: error.message });
-    return res.status(200).json(data);
-
-  } else if (req.method === 'POST') {
-    const { title, description, url, image_url } = req.body;
-
-    if (!title || !description) {
-      return res.status(400).json({ error: 'Title and description are required' });
+  try {
+    // Handle CORS preflight
+    Object.entries(CORS_HEADERS).forEach(([k, v]) => res.setHeader(k, v));
+    if (req.method === 'OPTIONS') {
+      return res.status(200).end();
     }
 
-    const { data, error } = await supabase
-      .from('portfolios')
-      .insert([{ title, description, url, image_url }])
-      .select();
+    if (req.method === 'GET') {
+      const { data, error } = await supabase
+        .from('portfolios')
+        .select('*')
+        .order('created_at', { ascending: false });
 
-    if (error) return res.status(500).json({ error: error.message });
-    return res.status(200).json(data[0]);
+      if (error) throw error;
+      return res.status(200).json(data);
 
-  } else if (req.method === 'DELETE') {
-    const { id } = req.body;
-    if (!id) return res.status(400).json({ error: 'ID is required to delete' });
+    } else if (req.method === 'POST') {
+      const { title, description, url, image_url } = req.body;
 
-    const { error } = await supabase
-      .from('portfolios')
-      .delete()
-      .eq('id', id);
+      if (!title || !description) {
+        return res.status(400).json({ error: 'Title and description are required' });
+      }
 
-    if (error) return res.status(500).json({ error: error.message });
-    return res.status(200).json({ message: 'Deleted successfully' });
+      const { data, error } = await supabase
+        .from('portfolios')
+        .insert([{ title, description, url, image_url }])
+        .select();
 
-  } else {
-    res.setHeader('Allow', ['GET', 'POST', 'DELETE', 'OPTIONS']);
-    res.status(405).end(`Method ${req.method} Not Allowed`);
+      if (error) throw error;
+      return res.status(200).json(data[0]);
+
+    } else if (req.method === 'DELETE') {
+      const { id } = req.body;
+      if (!id) return res.status(400).json({ error: 'ID is required to delete' });
+
+      const { error } = await supabase
+        .from('portfolios')
+        .delete()
+        .eq('id', id);
+
+      if (error) throw error;
+      return res.status(200).json({ message: 'Deleted successfully' });
+
+    } else {
+      res.setHeader('Allow', ['GET', 'POST', 'DELETE', 'OPTIONS']);
+      return res.status(405).json({ error: `Method ${req.method} Not Allowed` });
+    }
+  } catch (err) {
+    console.error('API Error:', err);
+    return res.status(500).json({ 
+      error: 'Internal Server Error', 
+      message: err.message,
+      stack: process.env.NODE_ENV === 'development' ? err.stack : undefined
+    });
   }
 }
