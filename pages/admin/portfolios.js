@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import AdminLayout from '../../components/AdminLayout';
+import { supabase } from '../../lib/supabaseClient';
 
 export default function PortfoliosAdmin() {
   const [portfolios, setPortfolios] = useState([]);
