@@ -58,9 +58,6 @@ export default function AdminLayout({ children }) {
                 <Link href="/admin" className={`${router.pathname === '/admin' ? 'border-cyan-400 text-white' : 'border-transparent text-gray-300 hover:border-gray-300 hover:text-white'} inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition-colors`}>
                   Arizalar
                 </Link>
-                <Link href="/admin/portfolios" className={`${router.pathname === '/admin/portfolios' ? 'border-cyan-400 text-white' : 'border-transparent text-gray-300 hover:border-gray-300 hover:text-white'} inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium transition-colors`}>
-                  Portfolio
-                </Link>
                 <a href="/" className="border-transparent text-gray-300 hover:border-gray-300 hover:text-white inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium" target="_blank" rel="noopener noreferrer">
                   Saytga o&apos;tish
                 </a>
