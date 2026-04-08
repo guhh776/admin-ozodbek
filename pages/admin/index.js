@@ -22,7 +22,7 @@ export default function AdminDashboard() {
         {loading ? (
           <p className="text-gray-400">Yuklanmoqda...</p>
         ) : applications.length === 0 ? (
-          <p className="text-gray-400">Hozircha arizalar yo'q.</p>
+          <p className="text-gray-400">Hozircha arizalar yo&apos;q.</p>
         ) : (
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {applications.map((app) => (

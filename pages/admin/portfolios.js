@@ -63,7 +63,7 @@ export default function PortfoliosAdmin() {
         <h1 className="text-2xl font-semibold text-white mb-6">Portfolio Boshqaruvi</h1>
         
         <div className="mb-10 bg-gray-800 shadow rounded-lg border border-gray-700 p-6">
-          <h2 className="text-lg font-medium text-white mb-4">Yangi qo'shish</h2>
+          <h2 className="text-lg font-medium text-white mb-4">Yangi qo&apos;shish</h2>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
               <div>
@@ -93,7 +93,7 @@ export default function PortfoliosAdmin() {
         {loading ? (
           <p className="text-gray-400">Yuklanmoqda...</p>
         ) : portfolios.length === 0 ? (
-          <p className="text-gray-400">Hozircha portfolio yo'q. Yangi qo'shing!</p>
+          <p className="text-gray-400">Hozircha portfolio yo&apos;q. Yangi qo&apos;shing!</p>
         ) : (
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {portfolios.map((item) => (
@@ -112,7 +112,7 @@ export default function PortfoliosAdmin() {
                 </div>
                 <div className="bg-gray-700 px-4 py-3 sm:px-6 flex justify-end">
                   <button onClick={() => handleDelete(item.id)} className="text-red-400 hover:text-red-300 text-sm font-medium">
-                    O'chirish
+                    O&apos;chirish
                   </button>
                 </div>
               </div>
