@@ -24,8 +24,18 @@ export default async function handler(req, res) {
       return res.status(200).json(data);
 
     } else if (req.method === 'POST') {
-      const { title, description, url, image_url } = req.body;
+      // Check for auth
+      const authHeader = req.headers.authorization;
+      if (!authHeader) {
+        return res.status(401).json({ error: 'Unauthorized: No token provided' });
+      }
+      const token = authHeader.replace('Bearer ', '');
+      const { data: { user }, error: authError } = await supabase.auth.getUser(token);
+      if (authError || !user) {
+        return res.status(401).json({ error: 'Unauthorized: Invalid token' });
+      }
 
+      const { title, description, url, image_url } = req.body;
       if (!title || !description) {
         return res.status(400).json({ error: 'Title and description are required' });
       }
@@ -39,6 +49,17 @@ export default async function handler(req, res) {
       return res.status(200).json(data[0]);
 
     } else if (req.method === 'DELETE') {
+      // Check for auth
+      const authHeader = req.headers.authorization;
+      if (!authHeader) {
+        return res.status(401).json({ error: 'Unauthorized: No token provided' });
+      }
+      const token = authHeader.replace('Bearer ', '');
+      const { data: { user }, error: authError } = await supabase.auth.getUser(token);
+      if (authError || !user) {
+        return res.status(401).json({ error: 'Unauthorized: Invalid token' });
+      }
+
       const { id } = req.body;
       if (!id) return res.status(400).json({ error: 'ID is required to delete' });
 

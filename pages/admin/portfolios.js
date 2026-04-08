@@ -11,9 +11,16 @@ export default function PortfoliosAdmin() {
   const [url, setUrl] = useState('');
   const [imageUrl, setImageUrl] = useState('');
 
-  const fetchPortfolios = () => {
+  const fetchPortfolios = async () => {
     setLoading(true);
-    fetch('/api/portfolios')
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) return;
+
+    fetch('/api/portfolios', {
+      headers: {
+        'Authorization': `Bearer ${session.access_token}`
+      }
+    })
       .then(res => res.json())
       .then(data => {
         setPortfolios(data || []);
@@ -27,9 +34,15 @@ export default function PortfoliosAdmin() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) return;
+
     const res = await fetch('/api/portfolios', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${session.access_token}`
+      },
       body: JSON.stringify({ title, description, url, image_url: imageUrl }),
     });
 
@@ -46,9 +59,15 @@ export default function PortfoliosAdmin() {
 
   const handleDelete = async (id) => {
     if (confirm("O'chirishni xohlaysizmi?")) {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) return;
+
       const res = await fetch('/api/portfolios', {
         method: 'DELETE',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${session.access_token}`
+        },
         body: JSON.stringify({ id }),
       });
       if (res.ok) {

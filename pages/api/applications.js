@@ -29,6 +29,19 @@ export default async function handler(req, res) {
       return res.status(200).json({ message: 'Xabar muvaffaqiyatli yuborildi!' });
 
     } else if (req.method === 'GET') {
+      // Check for auth
+      const authHeader = req.headers.authorization;
+      if (!authHeader) {
+        return res.status(401).json({ error: 'Unauthorized: No token provided' });
+      }
+
+      const token = authHeader.replace('Bearer ', '');
+      const { data: { user }, error: authError } = await supabase.auth.getUser(token);
+
+      if (authError || !user) {
+        return res.status(401).json({ error: 'Unauthorized: Invalid token' });
+      }
+
       const { data, error } = await supabase
         .from('applications')
         .select('*')

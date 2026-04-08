@@ -6,12 +6,26 @@ export default function AdminDashboard() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch('/api/applications')
-      .then(res => res.json())
-      .then(data => {
-        setApplications(data || []);
-        setLoading(false);
-      });
+    const fetchApplications = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) return;
+
+      fetch('/api/applications', {
+        headers: {
+          'Authorization': `Bearer ${session.access_token}`
+        }
+      })
+        .then(res => res.json())
+        .then(data => {
+          setApplications(data || []);
+          setLoading(false);
+        })
+        .catch(err => {
+          console.error(err);
+          setLoading(false);
+        });
+    };
+    fetchApplications();
   }, []);
 
   return (
